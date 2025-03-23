@@ -12,19 +12,28 @@ intents = discord.Intents.default()
 intents.message_content = True
 
 # Initialize bot with intents
-bot = commands.Bot(command_prefix="!", intents=intents)
+bot = commands.Bot(command_prefix="!", intents=intents,  application_id=1353371345248845875)
 
 @bot.event
 async def on_ready():
     print(f'Logged in as {bot.user}')
 
-@bot.command()
-async def hello(ctx):
-    await ctx.send("Hello! How can I assist you?")
+# Slash command: /hello
+@bot.tree.command(name="hello", description="Says hello!")
+async def hello(interaction: discord.Interaction):
+    await interaction.response.send_message("Hello! How can I assist you?")
 
-@bot.command()
-async def ping(ctx):
-    await ctx.send("Pong!")
+# Slash command: /ping
+@bot.tree.command(name="ping", description="Replies with Pong!")
+async def ping(interaction: discord.Interaction):
+    await interaction.response.send_message("Pong!")
+
+# Sync commands with Discord (this is required for slash commands)
+@bot.event
+async def on_ready():
+    await bot.tree.sync()  # Sync the commands with Discord
+
+    print(f'Logged in as {bot.user}')
 
 # Run the bot
 bot.run(TOKEN)
